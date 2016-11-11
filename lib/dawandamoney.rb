@@ -20,6 +20,10 @@ module Dawanda
 
       @convertion_rates[currency_code.to_sym] = convertion_rates
     end
+
+    def inspect
+      return "#{format("%.2f", amount)} #{currency}"
+    end
   end
 end
 

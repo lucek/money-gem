@@ -31,6 +31,7 @@ describe Dawanda::Money do
       end
     end
   end
+
   describe "#convertion_rates" do
     context "user has passed correct hash with exchange rates" do
       before :all do
@@ -66,6 +67,12 @@ describe Dawanda::Money do
           expect { Dawanda::Money.convertion_rates('EUR', {'USD' => 'abc'}) }.to raise_error(ConversionRatesAreNotNumbersError)
         end
       end
+    end
+  end
+
+  describe ".inspect" do
+    it "should return correct format" do
+      expect(Dawanda::Money.new(50, "EUR").inspect).to eq("50.00 EUR")
     end
   end
 end
