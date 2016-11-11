@@ -5,7 +5,7 @@ require 'dawandamoney/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "dawandamoney"
-  spec.version       = Dawandamoney::VERSION
+  spec.version       = Dawanda::VERSION
   spec.authors       = ["lucek"]
   spec.email         = ["lukasz.odziewa@gmail.com"]
   spec.summary       = %q{TODO: Write a short summary. Required.}
