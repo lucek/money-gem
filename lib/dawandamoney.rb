@@ -4,7 +4,7 @@ module Dawanda
   class Money
     attr_accessor :amount, :currency
 
-    @convertion_rates = {}
+    @conversion_rates = {}
 
     def initialize(amount, currency)
       raise IncorrectAmountFormatError unless amount.is_a?(Numeric)
@@ -14,11 +14,11 @@ module Dawanda
       @currency = currency
     end
 
-    def self.convertion_rates(currency_code, convertion_rates)
-      raise ConversionRatesIsNotAHashError unless convertion_rates.is_a?(Hash)
-      raise ConversionRatesAreNotNumbersError unless convertion_rates.map { |k,v| v }.all? { |i| i.is_a?(Numeric) }
+    def self.conversion_rates(currency_code, conversion_rates)
+      raise ConversionRatesIsNotAHashError unless conversion_rates.is_a?(Hash)
+      raise ConversionRatesAreNotNumbersError unless conversion_rates.map { |k,v| v }.all? { |i| i.is_a?(Numeric) }
 
-      @convertion_rates[currency_code.to_sym] = convertion_rates
+      @conversion_rates[currency_code.to_sym] = conversion_rates
     end
 
     def inspect
@@ -26,21 +26,21 @@ module Dawanda
     end
 
     def convert_to(other_currency)
-      other_currency_convertion_rate = nil
+      other_currency_conversion_rate = nil
 
-      if self.convertion_rates
-        other_currency_convertion_rate = self.convertion_rates[other_currency]
+      if self.conversion_rates
+        other_currency_conversion_rate = self.conversion_rates[other_currency]
       else
-        base_currency_convertion_rates = self.class.get_convertion_rates[other_currency.to_sym]
+        base_currency_conversion_rates = self.class.get_conversion_rates[other_currency.to_sym]
 
-        return if !base_currency_convertion_rates
+        return if !base_currency_conversion_rates
 
-        other_currency_convertion_rate = 1/base_currency_convertion_rates[self.currency]
+        other_currency_conversion_rate = 1/base_currency_conversion_rates[self.currency]
       end
 
-      raise NoConvertionRateDefinedError unless other_currency_convertion_rate
+      raise NoConvertionRateDefinedError unless other_currency_conversion_rate
 
-      other_currency_amount = (other_currency_convertion_rate * amount).round(2)
+      other_currency_amount = (other_currency_conversion_rate * amount).round(2)
 
       return self.class.new(other_currency_amount, other_currency)
     end
@@ -89,14 +89,14 @@ module Dawanda
 
     protected
 
-    def convertion_rates
-      return self.class.get_convertion_rates[currency.to_sym]
+    def conversion_rates
+      return self.class.get_conversion_rates[currency.to_sym]
     end
 
     private
 
-    def self.get_convertion_rates
-      @convertion_rates
+    def self.get_conversion_rates
+      @conversion_rates
     end
   end
 end
