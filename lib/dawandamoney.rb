@@ -70,6 +70,12 @@ module Dawanda
       return self.class.new((amount * number).round(2), currency)
     end
 
+    def ==(other)
+      other = other.convert_to(currency) if currency != other.currency
+
+      return amount == other.amount
+    end
+
     protected
 
     def convertion_rates

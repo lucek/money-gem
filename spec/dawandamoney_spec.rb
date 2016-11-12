@@ -284,4 +284,61 @@ describe Dawanda::Money do
       end
     end
   end
+
+  describe ".==" do
+    before :all do
+      @money = Dawanda::Money.new(50, "EUR")
+    end
+
+    context "user passed two objects with the same currency" do
+      context "other object has equal amount" do
+        before :all do
+          @other = Dawanda::Money.new(50, "EUR")
+        end
+
+        it "should return true" do
+          expect(@money == @other).to be(true)
+        end
+      end
+
+      context "other object does not have equal amount" do
+        before :all do
+          @other = Dawanda::Money.new(25.50, "EUR")
+        end
+
+        it "should return false" do
+          expect(@money == @other).to be(false)
+        end
+      end
+    end
+
+    context "user passed other object with different currency" do
+      before :all do
+        Dawanda::Money.convertion_rates("EUR", {
+          'USD'     => 1.11,
+          'Bitcoin' => 0.0047
+        })
+      end
+
+      context "other object has equal amount after convertion" do
+        before :all do
+          @other = Dawanda::Money.new(55.50, "USD")
+        end
+
+        it "should return true" do
+          expect(@money == @other).to be(true)
+        end
+      end
+
+      context "other object does not have equal amount after convertion" do
+        before :all do
+          @other = Dawanda::Money.new(25.50, "USD")
+        end
+
+        it "should return false" do
+          expect(@money == @other).to be(false)
+        end
+      end
+    end
+  end
 end
