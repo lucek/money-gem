@@ -43,16 +43,22 @@ module Dawanda
       return self.class.new(other_currency_amount, other_currency)
     end
 
-    def +(other)
-      other = other.convert_to(currency) if currency != other.currency
+    [:+, :-].each do |operator|
+      define_method(operator) do |other|
+        raise OtherIsNotDawandaMoneyError unless other.is_a?(Dawanda::Money)
+        other = other.convert_to(currency) if currency != other.currency && other.amount != 0
 
-      return self.class.new((amount + other.amount).round(2), currency)
+        return self.class.new(amount.send(operator, other.amount).round(2), currency)
+      end
     end
 
-    def -(other)
-      other = other.convert_to(currency) if currency != other.currency
+    [:==, :>, :<].each do |operator|
+      define_method(operator) do |other|
+        raise OtherIsNotDawandaMoneyError unless other.is_a?(Dawanda::Money)
 
-      return self.class.new((amount - other.amount).round(2), currency)
+        other = other.convert_to(currency) if currency != other.currency && other.amount != 0
+        return amount.send(operator, other.amount)
+      end
     end
 
     def /(number)
@@ -65,24 +71,6 @@ module Dawanda
       raise IncorrectValueError unless number.is_a?(Numeric)
 
       return self.class.new((amount * number).round(2), currency)
-    end
-
-    def ==(other)
-      other = other.convert_to(currency) if currency != other.currency
-
-      return amount == other.amount
-    end
-
-    def >(other)
-      other = other.convert_to(currency) if currency != other.currency
-
-      return amount > other.amount
-    end
-
-    def <(other)
-      other = other.convert_to(currency) if currency != other.currency
-
-      return amount < other.amount
     end
 
     protected

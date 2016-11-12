@@ -5,7 +5,7 @@ describe Dawanda::Money do
   before :all do
     @base_amount = 50
   end
-  
+
   describe "#new" do
     context "user has passed correct values" do
       before :all do
@@ -118,9 +118,12 @@ describe Dawanda::Money do
   end
 
   describe ".+" do
+    before :all do
+      @money = Dawanda::Money.new(@base_amount, "EUR")
+    end
+
     context "user passed two objects with the same currency" do
       before :all do
-        @money = Dawanda::Money.new(@base_amount, "EUR")
         @other = Dawanda::Money.new(@base_amount + 25.50, "EUR")
       end
 
@@ -144,7 +147,6 @@ describe Dawanda::Money do
           'Bitcoin' => 0.0047
         })
 
-        @money = Dawanda::Money.new(@base_amount, "EUR")
         @other = Dawanda::Money.new(@base_amount + 5.50, "USD")
       end
 
@@ -159,13 +161,37 @@ describe Dawanda::Money do
       it "should return new Dawanda::Money object with correct amount" do
         expect((@money + @other).amount).to eq(100)
       end
+
+      context "user passed object with amount = 0" do
+        before :all do
+          @other = Dawanda::Money.new(0, "USD")
+        end
+
+        it "should not convert money" do
+          expect(@other).not_to receive(:convert_to)
+          @money + @other
+        end
+      end
+    end
+
+    context "user passed object that is not Dawanda::Money" do
+      before :all do
+        @other = nil
+      end
+
+      it "should raise OtherIsNotDawandaMoneyError" do
+        expect { @money + @other }.to raise_error(OtherIsNotDawandaMoneyError)
+      end
     end
   end
 
   describe ".-" do
+    before :all do
+      @money = Dawanda::Money.new(@base_amount, "EUR")
+    end
+
     context "user passed two objects with the same currency" do
       before :all do
-        @money = Dawanda::Money.new(@base_amount, "EUR")
         @other = Dawanda::Money.new(@base_amount - 24.50, "EUR")
       end
 
@@ -189,7 +215,6 @@ describe Dawanda::Money do
           'Bitcoin' => 0.0047
         })
 
-        @money = Dawanda::Money.new(@base_amount, "EUR")
         @other = Dawanda::Money.new(@base_amount + 3.50, "USD")
       end
 
@@ -203,6 +228,27 @@ describe Dawanda::Money do
 
       it "should return new Dawanda::Money object with correct amount" do
         expect((@money - @other).amount).to eq(1.80)
+      end
+
+      context "user passed object with amount = 0" do
+        before :all do
+          @other = Dawanda::Money.new(0, "USD")
+        end
+
+        it "should not convert money" do
+          expect(@other).not_to receive(:convert_to)
+          @money - @other
+        end
+      end
+    end
+
+    context "user passed object that is not Dawanda::Money" do
+      before :all do
+        @other = nil
+      end
+
+      it "should raise OtherIsNotDawandaMoneyError" do
+        expect { @money - @other }.to raise_error(OtherIsNotDawandaMoneyError)
       end
     end
   end
@@ -343,6 +389,27 @@ describe Dawanda::Money do
           expect(@money == @other).to be(false)
         end
       end
+
+      context "user passed object with amount = 0" do
+        before :all do
+          @other = Dawanda::Money.new(0, "USD")
+        end
+
+        it "should not convert money" do
+          expect(@other).not_to receive(:convert_to)
+          @money == @other
+        end
+      end
+    end
+
+    context "user passed object that is not Dawanda::Money" do
+      before :all do
+        @other = nil
+      end
+
+      it "should raise OtherIsNotDawandaMoneyError" do
+        expect { @money == @other }.to raise_error(OtherIsNotDawandaMoneyError)
+      end
     end
   end
 
@@ -379,6 +446,17 @@ describe Dawanda::Money do
 
         it "should return false" do
           expect(@money > @other).to be(false)
+        end
+      end
+
+      context "user passed object with amount = 0" do
+        before :all do
+          @other = Dawanda::Money.new(0, "USD")
+        end
+
+        it "should not convert money" do
+          expect(@other).not_to receive(:convert_to)
+          @money > @other
         end
       end
     end
@@ -419,6 +497,16 @@ describe Dawanda::Money do
         it "should return false" do
           expect(@money > @other).to be(false)
         end
+      end
+    end
+
+    context "user passed object that is not Dawanda::Money" do
+      before :all do
+        @other = nil
+      end
+
+      it "should raise OtherIsNotDawandaMoneyError" do
+        expect { @money > @other }.to raise_error(OtherIsNotDawandaMoneyError)
       end
     end
   end
@@ -496,6 +584,27 @@ describe Dawanda::Money do
         it "should return false" do
           expect(@money < @other).to be(false)
         end
+      end
+
+      context "user passed object with amount = 0" do
+        before :all do
+          @other = Dawanda::Money.new(0, "USD")
+        end
+
+        it "should not convert money" do
+          expect(@other).not_to receive(:convert_to)
+          @money < @other
+        end
+      end
+    end
+
+    context "user passed object that is not Dawanda::Money" do
+      before :all do
+        @other = nil
+      end
+
+      it "should raise OtherIsNotDawandaMoneyError" do
+        expect { @money < @other }.to raise_error(OtherIsNotDawandaMoneyError)
       end
     end
   end
