@@ -2,6 +2,10 @@ require 'spec_helper'
 require 'dawandamoney'
 
 describe Dawanda::Money do
+  before :all do
+    @base_amount = 50
+  end
+  
   describe "#new" do
     context "user has passed correct values" do
       before :all do
@@ -116,8 +120,8 @@ describe Dawanda::Money do
   describe ".+" do
     context "user passed two objects with the same currency" do
       before :all do
-        @money = Dawanda::Money.new(50, "EUR")
-        @other = Dawanda::Money.new(75.50, "EUR")
+        @money = Dawanda::Money.new(@base_amount, "EUR")
+        @other = Dawanda::Money.new(@base_amount + 25.50, "EUR")
       end
 
       it "should return new Dawanda::Money object" do
@@ -140,8 +144,8 @@ describe Dawanda::Money do
           'Bitcoin' => 0.0047
         })
 
-        @money = Dawanda::Money.new(50, "EUR")
-        @other = Dawanda::Money.new(55.50, "USD")
+        @money = Dawanda::Money.new(@base_amount, "EUR")
+        @other = Dawanda::Money.new(@base_amount + 5.50, "USD")
       end
 
       it "should return new Dawanda::Money object" do
@@ -161,8 +165,8 @@ describe Dawanda::Money do
   describe ".-" do
     context "user passed two objects with the same currency" do
       before :all do
-        @money = Dawanda::Money.new(50, "EUR")
-        @other = Dawanda::Money.new(25.50, "EUR")
+        @money = Dawanda::Money.new(@base_amount, "EUR")
+        @other = Dawanda::Money.new(@base_amount - 24.50, "EUR")
       end
 
       it "should return new Dawanda::Money object" do
@@ -185,8 +189,8 @@ describe Dawanda::Money do
           'Bitcoin' => 0.0047
         })
 
-        @money = Dawanda::Money.new(50, "EUR")
-        @other = Dawanda::Money.new(53.50, "USD")
+        @money = Dawanda::Money.new(@base_amount, "EUR")
+        @other = Dawanda::Money.new(@base_amount + 3.50, "USD")
       end
 
       it "should return new Dawanda::Money object" do
@@ -287,7 +291,7 @@ describe Dawanda::Money do
 
   describe ".==" do
     before :all do
-      @money = Dawanda::Money.new(50, "EUR")
+      @money = Dawanda::Money.new(@base_amount, "EUR")
     end
 
     context "user passed two objects with the same currency" do
@@ -303,7 +307,7 @@ describe Dawanda::Money do
 
       context "other object does not have equal amount" do
         before :all do
-          @other = Dawanda::Money.new(25.50, "EUR")
+          @other = Dawanda::Money.new(@base_amount - 24.50, "EUR")
         end
 
         it "should return false" do
@@ -322,7 +326,7 @@ describe Dawanda::Money do
 
       context "other object has equal amount after convertion" do
         before :all do
-          @other = Dawanda::Money.new(55.50, "USD")
+          @other = Dawanda::Money.new(@base_amount + 5.50, "USD")
         end
 
         it "should return true" do
@@ -344,13 +348,13 @@ describe Dawanda::Money do
 
   describe ".>" do
     before :all do
-      @money = Dawanda::Money.new(50, "EUR")
+      @money = Dawanda::Money.new(@base_amount, "EUR")
     end
 
     context "user passed two objects with the same currency" do
       context "other object has smaller amount" do
         before :all do
-          @other = Dawanda::Money.new(49, "EUR")
+          @other = Dawanda::Money.new(@base_amount - 1, "EUR")
         end
 
         it "should return true" do
@@ -360,7 +364,7 @@ describe Dawanda::Money do
 
       context "other object does not have smaller amount" do
         before :all do
-          @other = Dawanda::Money.new(51, "EUR")
+          @other = Dawanda::Money.new(@base_amount + 1, "EUR")
         end
 
         it "should return false" do
@@ -370,7 +374,7 @@ describe Dawanda::Money do
 
       context "other object has equal amount" do
         before :all do
-          @other = Dawanda::Money.new(50, "EUR")
+          @other = Dawanda::Money.new(@base_amount, "EUR")
         end
 
         it "should return false" do
@@ -389,7 +393,7 @@ describe Dawanda::Money do
 
       context "other object has smaller amount after convertion" do
         before :all do
-          @other = Dawanda::Money.new(54.50, "USD")
+          @other = Dawanda::Money.new(@base_amount + 4.50, "USD")
         end
 
         it "should return true" do
@@ -399,7 +403,7 @@ describe Dawanda::Money do
 
       context "other object does not have smaller amount after convertion" do
         before :all do
-          @other = Dawanda::Money.new(125.50, "USD")
+          @other = Dawanda::Money.new(@base_amount + 75.50, "USD")
         end
 
         it "should return false" do
@@ -409,7 +413,7 @@ describe Dawanda::Money do
 
       context "other object has equal amount after convertion" do
         before :all do
-          @other = Dawanda::Money.new(55.5, "USD")
+          @other = Dawanda::Money.new(@base_amount + 5.5, "USD")
         end
 
         it "should return false" do
@@ -421,13 +425,13 @@ describe Dawanda::Money do
 
   describe ".<" do
     before :all do
-      @money = Dawanda::Money.new(50, "EUR")
+      @money = Dawanda::Money.new(@base_amount, "EUR")
     end
 
     context "user passed two objects with the same currency" do
       context "other object has bigger amount" do
         before :all do
-          @other = Dawanda::Money.new(51, "EUR")
+          @other = Dawanda::Money.new(@base_amount + 1, "EUR")
         end
 
         it "should return true" do
@@ -437,7 +441,7 @@ describe Dawanda::Money do
 
       context "other object does not have bigger amount" do
         before :all do
-          @other = Dawanda::Money.new(49, "EUR")
+          @other = Dawanda::Money.new(@base_amount - 1, "EUR")
         end
 
         it "should return false" do
@@ -447,7 +451,7 @@ describe Dawanda::Money do
 
       context "other object has equal amount" do
         before :all do
-          @other = Dawanda::Money.new(50, "EUR")
+          @other = Dawanda::Money.new(@base_amount, "EUR")
         end
 
         it "should return false" do
@@ -466,7 +470,7 @@ describe Dawanda::Money do
 
       context "other object has smaller amount after convertion" do
         before :all do
-          @other = Dawanda::Money.new(56.50, "USD")
+          @other = Dawanda::Money.new(@base_amount + 6.50, "USD")
         end
 
         it "should return true" do
@@ -476,7 +480,7 @@ describe Dawanda::Money do
 
       context "other object does not have smaller amount after convertion" do
         before :all do
-          @other = Dawanda::Money.new(25.50, "USD")
+          @other = Dawanda::Money.new(@base_amount - 24.50, "USD")
         end
 
         it "should return false" do
@@ -486,7 +490,7 @@ describe Dawanda::Money do
 
       context "other object has equal amount after convertion" do
         before :all do
-          @other = Dawanda::Money.new(55.5, "USD")
+          @other = Dawanda::Money.new(@base_amount + 5.5, "USD")
         end
 
         it "should return false" do
