@@ -49,7 +49,13 @@ module Dawanda
     def +(other)
       other = other.convert_to(currency) if currency != other.currency
 
-      return self.class.new(amount + other.amount, currency)
+      return self.class.new((amount + other.amount).round(2), currency)
+    end
+
+    def -(other)
+      other = other.convert_to(currency) if currency != other.currency
+
+      return self.class.new((amount - other.amount).round(2), currency)
     end
 
     protected

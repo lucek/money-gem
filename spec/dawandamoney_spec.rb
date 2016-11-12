@@ -157,4 +157,49 @@ describe Dawanda::Money do
       end
     end
   end
+
+  describe ".-" do
+    context "user passed two objects with the same currency" do
+      before :all do
+        @money = Dawanda::Money.new(50, "EUR")
+        @other = Dawanda::Money.new(25.50, "EUR")
+      end
+
+      it "should return new Dawanda::Money object" do
+        expect(@money - @other).to be_a(Dawanda::Money)
+      end
+
+      it "should return new Dawanda::Money object with correct currency" do
+        expect((@money - @other).currency).to eq("EUR")
+      end
+
+      it "should return new Dawanda::Money object with correct amount" do
+        expect((@money - @other).amount).to eq(24.50)
+      end
+    end
+
+    context "user passed other object with different currency" do
+      before :all do
+        Dawanda::Money.convertion_rates("EUR", {
+          'USD'     => 1.11,
+          'Bitcoin' => 0.0047
+        })
+
+        @money = Dawanda::Money.new(50, "EUR")
+        @other = Dawanda::Money.new(53.50, "USD")
+      end
+
+      it "should return new Dawanda::Money object" do
+        expect(@money - @other).to be_a(Dawanda::Money)
+      end
+
+      it "should return new Dawanda::Money object with correct currency" do
+        expect((@money - @other).currency).to eq("EUR")
+      end
+
+      it "should return new Dawanda::Money object with correct amount" do
+        expect((@money - @other).amount).to eq(1.80)
+      end
+    end
+  end
 end
