@@ -32,7 +32,7 @@ module Dawanda
         base_currency_conversion_rates = self.class.get_conversion_rates[other_currency.to_sym]
 
         other_currency_conversion_rate = base_currency_conversion_rates ?
-          1/base_currency_conversion_rates[self.currency] :
+          1/base_currency_conversion_rates[self.currency].to_f :
           nil
       end
 
