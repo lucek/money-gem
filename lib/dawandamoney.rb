@@ -1,4 +1,5 @@
 require "dawandamoney/version"
+require 'pry'
 
 module Dawanda
   class Money
@@ -24,6 +25,30 @@ module Dawanda
     def inspect
       return "#{format("%.2f", amount)} #{currency}"
     end
+
+    def convert_to(other_currency)
+      convertion_rates = self.convertion_rates
+      raise NoConvertionRatesDefinedError unless convertion_rates
+
+      other_currency_convertion_rate = convertion_rates[other_currency]
+      raise NoConvertionRateDefinedError unless other_currency_convertion_rate
+
+      other_currency_amount = (other_currency_convertion_rate * amount).round(2)
+
+      return self.class.new(other_currency_amount, other_currency)
+    end
+
+    protected
+
+    def convertion_rates
+      return self.class.get_convertion_rates[currency.to_sym]
+    end
+
+    private
+
+    def self.get_convertion_rates
+      @convertion_rates
+    end
   end
 end
 
@@ -37,4 +62,10 @@ class ConversionRatesIsNotAHashError < StandardError
 end
 
 class ConversionRatesAreNotNumbersError < StandardError
+end
+
+class NoConvertionRatesDefinedError < StandardError
+end
+
+class NoConvertionRateDefinedError < StandardError
 end

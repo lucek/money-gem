@@ -75,4 +75,51 @@ describe Dawanda::Money do
       expect(Dawanda::Money.new(50, "EUR").inspect).to eq("50.00 EUR")
     end
   end
+
+  describe ".convert_to" do
+    context "there are convertion rates defined for given currency" do
+      before :all do
+        @currency_code = 'EUR'
+        @convertion_rates = {
+          'USD'     => 1.11,
+          'Bitcoin' => 0.0047
+        }
+
+        Dawanda::Money.convertion_rates(@currency_code, @convertion_rates)
+
+        @money = Dawanda::Money.new(50, "EUR")
+        @converted_to_usd = @money.convert_to("USD")
+      end
+
+      context "there is convertion rate defined for other currency" do
+        it "should return new Dawanda::Money object" do
+          expect(@converted_to_usd).to be_a(Dawanda::Money)
+        end
+
+        it "should return correct currency" do
+          expect(@converted_to_usd.currency).to eq("USD")
+        end
+
+        it "should return correct amount" do
+          expect(@converted_to_usd.amount).to eq(55.5)
+        end
+      end
+
+      context "there is no convertion rate defined for other currency" do
+        it "should raise NoConvertionRateDefinedError" do
+          expect { @money.convert_to("GBP") }.to raise_error(NoConvertionRateDefinedError)
+        end
+      end
+    end
+
+    context "there are no convertion rates defined for given currency" do
+      before :each do
+        Dawanda::Money.instance_variable_set(:@convertion_rates, {})
+      end
+
+      it "should raise NoConvertionRatesDefinedError" do
+        expect { (Dawanda::Money.new(50, "EUR")).convert_to("USD") }.to raise_error(NoConvertionRatesDefinedError)
+      end
+    end
+  end
 end
