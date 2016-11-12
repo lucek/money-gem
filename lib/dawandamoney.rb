@@ -76,6 +76,12 @@ module Dawanda
       return amount == other.amount
     end
 
+    def >(other)
+      other = other.convert_to(currency) if currency != other.currency
+
+      return amount > other.amount
+    end
+
     protected
 
     def convertion_rates
