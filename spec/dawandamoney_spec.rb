@@ -111,14 +111,49 @@ describe Dawanda::Money do
         end
       end
     end
+  end
 
-    context "there are no convertion rates defined for given currency" do
-      before :each do
-        Dawanda::Money.instance_variable_set(:@convertion_rates, {})
+  describe ".+" do
+    context "user passed two objects with the same currency" do
+      before :all do
+        @money = Dawanda::Money.new(50, "EUR")
+        @other = Dawanda::Money.new(75.50, "EUR")
       end
 
-      it "should raise NoConvertionRatesDefinedError" do
-        expect { (Dawanda::Money.new(50, "EUR")).convert_to("USD") }.to raise_error(NoConvertionRatesDefinedError)
+      it "should return new Dawanda::Money object" do
+        expect(@money + @other).to be_a(Dawanda::Money)
+      end
+
+      it "should return new Dawanda::Money object with correct currency" do
+        expect((@money + @other).currency).to eq("EUR")
+      end
+
+      it "should return new Dawanda::Money object with correct amount" do
+        expect((@money + @other).amount).to eq(125.50)
+      end
+    end
+
+    context "user passed other object with different currency" do
+      before :all do
+        Dawanda::Money.convertion_rates("EUR", {
+          'USD'     => 1.11,
+          'Bitcoin' => 0.0047
+        })
+
+        @money = Dawanda::Money.new(50, "EUR")
+        @other = Dawanda::Money.new(55.50, "USD")
+      end
+
+      it "should return new Dawanda::Money object" do
+        expect(@money + @other).to be_a(Dawanda::Money)
+      end
+
+      it "should return new Dawanda::Money object with correct currency" do
+        expect((@money + @other).currency).to eq("EUR")
+      end
+
+      it "should return new Dawanda::Money object with correct amount" do
+        expect((@money + @other).amount).to eq(100)
       end
     end
   end

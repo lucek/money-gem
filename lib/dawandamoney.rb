@@ -27,15 +27,29 @@ module Dawanda
     end
 
     def convert_to(other_currency)
-      convertion_rates = self.convertion_rates
-      raise NoConvertionRatesDefinedError unless convertion_rates
+      other_currency_convertion_rate = nil
 
-      other_currency_convertion_rate = convertion_rates[other_currency]
+      if self.convertion_rates
+        other_currency_convertion_rate = self.convertion_rates[other_currency]
+      else
+        base_currency_convertion_rates = self.class.get_convertion_rates[other_currency.to_sym]
+
+        return if !base_currency_convertion_rates
+
+        other_currency_convertion_rate = 1/base_currency_convertion_rates[self.currency]
+      end
+
       raise NoConvertionRateDefinedError unless other_currency_convertion_rate
 
       other_currency_amount = (other_currency_convertion_rate * amount).round(2)
 
       return self.class.new(other_currency_amount, other_currency)
+    end
+
+    def +(other)
+      other = other.convert_to(currency) if currency != other.currency
+
+      return self.class.new(amount + other.amount, currency)
     end
 
     protected
