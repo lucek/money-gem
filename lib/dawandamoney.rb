@@ -64,6 +64,12 @@ module Dawanda
       return self.class.new((amount / number).round(2), currency)
     end
 
+    def *(number)
+      raise IncorrectValueError unless number.is_a?(Numeric)
+
+      return self.class.new((amount * number).round(2), currency)
+    end
+
     protected
 
     def convertion_rates

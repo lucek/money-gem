@@ -204,9 +204,12 @@ describe Dawanda::Money do
   end
 
   describe "./" do
+    before :all do
+      @money = Dawanda::Money.new(50, "EUR")
+    end
+
     context "user passed correct number value" do
       before :all do
-        @money = Dawanda::Money.new(50, "EUR")
         @number = 2
       end
 
@@ -224,10 +227,6 @@ describe Dawanda::Money do
     end
 
     context "user passed incorrect number value" do
-      before :all do
-        @money = Dawanda::Money.new(50, "EUR")
-      end
-
       context "user passed non-numeric value" do
         before :all do
           @number = 'aaa'
@@ -245,6 +244,42 @@ describe Dawanda::Money do
 
         it "should raise IncorrectValueError" do
           expect { @money / @number }.to raise_error(IncorrectValueError)
+        end
+      end
+    end
+  end
+
+  describe ".*" do
+    before :all do
+      @money = Dawanda::Money.new(50, "EUR")
+    end
+
+    context "user passed correct number value" do
+      before :all do
+        @number = 2
+      end
+
+      it "should return new Dawanda::Money object" do
+        expect(@money * @number).to be_a(Dawanda::Money)
+      end
+
+      it "should return new Dawanda::Money object with correct currency" do
+        expect((@money * @number).currency).to eq("EUR")
+      end
+
+      it "should return new Dawanda::Money object with correct amount" do
+        expect((@money * @number).amount).to eq(100)
+      end
+    end
+
+    context "user passed incorrect number value" do
+      context "user passed non-numeric value" do
+        before :all do
+          @number = 'aaa'
+        end
+
+        it "should raise IncorrectValueError" do
+          expect { @money * @number }.to raise_error(IncorrectValueError)
         end
       end
     end
