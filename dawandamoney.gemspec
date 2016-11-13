@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Dawanda::VERSION
   spec.authors       = ["lucek"]
   spec.email         = ["lukasz.odziewa@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = "Money gem created for Dawanda"
+  spec.description   = "Money gem created for Dawanda coding challenge"
+  spec.homepage      = "https://github.com/lucek/money-gem"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
