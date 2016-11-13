@@ -13,8 +13,7 @@ module Dawanda
       raise IncorrectAmountFormatError unless amount.is_a?(Numeric)
       raise IncorrectCurrencyFormatError unless currency.is_a?(String)
 
-      @amount = amount
-      @currency = currency
+      @amount, @currency = amount, currency
     end
 
     def self.conversion_rates(currency_code, conversion_rates)
